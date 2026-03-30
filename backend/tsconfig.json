@@ -1,44 +1,26 @@
 {
-  // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
-    // File Layout
-    // "rootDir": "./src",
-    // "outDir": "./dist",
-
-    // Environment Settings
-    // See also https://aka.ms/tsconfig/module
-    "module": "nodenext",
-    "target": "esnext",
-    "types": [],
-    // For nodejs:
-    // "lib": ["esnext"],
-    // "types": ["node"],
-    // and npm install -D @types/node
-
-    // Other Outputs
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
-
-    // Stricter Typechecking Options
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-
-    // Style Options
-    // "noImplicitReturns": true,
-    // "noImplicitOverride": true,
-    // "noUnusedLocals": true,
-    // "noUnusedParameters": true,
-    // "noFallthroughCasesInSwitch": true,
-    // "noPropertyAccessFromIndexSignature": true,
-
-    // Recommended Options
-    "strict": true,
-    "jsx": "react-jsx",
-    "verbatimModuleSyntax": true,
-    "isolatedModules": true,
-    "noUncheckedSideEffectImports": true,
-    "moduleDetection": "force",
-    "skipLibCheck": true,
-  }
+    /* Base Options */
+    "target": "ESNext",                                /* Set the JavaScript version for the output [cite: 22] */
+    "module": "NodeNext",                              /* Required for modern Node.js "type": "module" projects */
+    "moduleResolution": "NodeNext",                    /* Ensures TS finds your files correctly in a modern setup */
+    "rootDir": "./src",                                /* Where your source code lives [cite: 36] */
+    "outDir": "./dist",                               /* Where the final compiled JavaScript goes */
+    
+    /* Strictness - Senior Level Settings */
+    "strict": true,                                    /* Enable all strict type-checking options */
+    "noImplicitAny": true,                             /* Force you to define types instead of using 'any' */
+    "strictNullChecks": true,                          /* Prevents "cannot read property of undefined" errors */
+    
+    /* Interop & Electronics */
+    "esModuleInterop": true,                           /* Allows easy importing of CommonJS libraries like Express */
+    "skipLibCheck": true,                              /* Speeds up compilation by skipping type checks of node_modules */
+    "forceConsistentCasingInFileNames": true,          /* Important for Windows vs Linux compatibility */
+    
+    /* Project Details */
+    "removeComments": false,                           /* Keep comments in the compiled code for easier debugging */
+    "sourceMap": true                                  /* Helps you debug TS code directly in VS Code */
+  },
+  "include": ["src/**/*"],                             /* Tell TS to only look at files in your src folder */
+  "exclude": ["node_modules", "**/*.test.ts"]          /* Ignore the library folders and test files during build */
 }
