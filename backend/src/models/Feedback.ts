@@ -29,7 +29,7 @@ const FeedbackSchema: Schema = new Schema({
   }, // [cite: 103]
   status: { 
     type: String, 
-    enum: ['New', 'In Review', 'Resolved'], 
+    enum: ['New', 'In Progress', 'Resolved'], 
     default: 'New' 
   }, // [cite: 103]
   submitterName: { type: String }, // [cite: 104]

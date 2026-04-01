@@ -1,9 +1,19 @@
 import { Router } from 'express';
-import { createFeedback } from '../controllers/feedbackController.js';
+import { 
+  createFeedback, 
+  getAllFeedback, 
+  updateFeedbackStatus 
+} from '../controllers/feedbackController.js';
 
 const router = Router();
 
-// This matches POST /api/feedback 
+// POST /api/feedback - Create (Done!)
 router.post('/', createFeedback);
+
+// GET /api/feedback - Read All
+router.get('/', getAllFeedback);
+
+// PATCH /api/feedback/:id - Update Status
+router.patch('/:id', updateFeedbackStatus);
 
 export default router;

@@ -65,3 +65,67 @@ return res.status(201).json({
     });
   }
 };
+
+// --- Requirement 4.2: Get all feedback entries ---
+export const getAllFeedback = async (req: Request, res: Response) => {
+  try {
+    // Senior Tip: Sort by 'createdAt' descending so newest feedback shows up first
+    const feedbacks = await Feedback.find().sort({ createdAt: -1 });
+    
+    return res.status(200).json({
+      success: true,
+      count: feedbacks.length,
+      data: feedbacks
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error fetching feedback',
+      error: error.message
+    });
+  }
+};
+
+// --- Requirement 4.3: Update feedback status ---
+export const updateFeedbackStatus = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const allowedStatuses = ['New', 'In Progress', 'Resolved'];
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid status format.'
+      });
+    }
+
+    const updatedFeedback = await Feedback.findByIdAndUpdate(
+      id,
+      { status },
+      { 
+        returnDocument: 'after', // This replaces 'new: true' to stop the warning
+        runValidators: true 
+      }
+    );
+
+    if (!updatedFeedback) {
+      return res.status(404).json({
+        success: false,
+        message: 'Feedback not found'
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: updatedFeedback,
+      message: `Status updated to ${status}`
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error updating status',
+      error: error.message
+    });
+  }
+};
