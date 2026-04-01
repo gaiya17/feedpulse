@@ -15,7 +15,14 @@ const app: Application = express();
 const PORT = process.env.PORT || 4000;
 
 // 3. Global Middleware
-app.use(cors());
+// Add specific CORS options
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true,
+  methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
 app.use(express.json()); // Essential: Must come before routes to parse request bodies
 
 // 4. Security: Rate Limiting
@@ -29,6 +36,11 @@ const submissionLimiter = rateLimit({
   },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, 
+});
+
+app.use((req, res, next) => {
+  console.log(`Incoming Request: ${req.method} ${req.url}`);
+  next();
 });
 
 // 5. API Routes
