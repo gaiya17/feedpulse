@@ -46,3 +46,36 @@ export const analyzeFeedback = async (title: string, description: string) => {
     return null;
   }
 };
+
+// Add this new function to gemini.service.ts
+export const generateTrendSummary = async (feedbacks: any[]) => {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey || feedbacks.length === 0) return "No feedback available to summarize.";
+
+  try {
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel(
+      { model: "gemini-3-flash-preview" },
+      { apiVersion: "v1beta" }
+    );
+
+    // Format the feedback list into a readable string for the AI
+    const feedbackText = feedbacks.map(f => `- [${f.category}] ${f.title}: ${f.description}`).join('\n');
+
+    const prompt = `
+      You are a Product Manager assistant. Analyze the following feedback entries from users. 
+      Provide a concise 3-sentence summary highlighting the most common complaints, 
+      recurring themes, and one suggested priority action for the team.
+
+      User Feedback:
+      ${feedbackText}
+    `;
+
+    const result = await model.generateContent(prompt);
+    return result.response.text();
+    
+  } catch (error: any) {
+    console.error("Summary Generation Error:", error.message);
+    return "Could not generate AI summary at this time.";
+  }
+};

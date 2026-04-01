@@ -51,3 +51,9 @@ const FeedbackSchema: Schema = new Schema({
 FeedbackSchema.index({ status: 1, category: 1, ai_priority: -1 });
 
 export default mongoose.model<IFeedback>('Feedback', FeedbackSchema);
+
+// Add these right before export default...
+FeedbackSchema.index({ status: 1 });
+FeedbackSchema.index({ category: 1 });
+FeedbackSchema.index({ ai_priority: -1 }); // -1 for descending (highest priority first)
+FeedbackSchema.index({ createdAt: -1 });

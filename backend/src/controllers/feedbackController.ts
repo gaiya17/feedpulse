@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import Feedback from '../models/Feedback.js';
-import { analyzeFeedback } from '../services/gemini.service.js'; // Import our new AI service
+import { analyzeFeedback,generateTrendSummary } from '../services/gemini.service.js'; // Import our new AI service
 
 export const createFeedback = async (req: Request, res: Response) => {
   try {
@@ -125,6 +125,55 @@ export const updateFeedbackStatus = async (req: Request, res: Response) => {
     return res.status(500).json({
       success: false,
       message: 'Error updating status',
+      error: error.message
+    });
+  }
+};
+
+// Get Single Feedback
+export const getFeedbackById = async (req: Request, res: Response) => {
+  try {
+    const feedback = await Feedback.findById(req.params.id);
+    if (!feedback) return res.status(404).json({ success: false, message: 'Not found' });
+    return res.status(200).json({ success: true, data: feedback });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// Delete Feedback
+export const deleteFeedback = async (req: Request, res: Response) => {
+  try {
+    const feedback = await Feedback.findByIdAndDelete(req.params.id);
+    if (!feedback) return res.status(404).json({ success: false, message: 'Not found' });
+    return res.status(200).json({ success: true, message: 'Feedback deleted' });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+export const getAISummary = async (req: Request, res: Response) => {
+  try {
+    // Fetch the 10 most recent feedback entries
+    const latestFeedback = await Feedback.find().sort({ createdAt: -1 }).limit(10);
+
+    if (latestFeedback.length === 0) {
+      return res.status(200).json({
+        success: true,
+        summary: "Not enough feedback yet to generate a summary."
+      });
+    }
+
+    const summary = await generateTrendSummary(latestFeedback);
+
+    return res.status(200).json({
+      success: true,
+      summary
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error generating summary',
       error: error.message
     });
   }
