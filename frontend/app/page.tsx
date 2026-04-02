@@ -3,7 +3,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { Send, MessageSquare, User, Tag, Mail } from "lucide-react";
+import { Send, MessageSquare, User, Tag } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function FeedbackPage() {
@@ -19,14 +19,15 @@ export default function FeedbackPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Requirement 1.3: Validation
+    // Validation
     if (formData.title.trim().length === 0) return toast.error("Title is required");
     if (formData.description.length < 20) return toast.error("Description must be at least 20 characters");
 
     setLoading(true);
     try {
-      // Requirement 1.4: POST to Node.js backend
-      await axios.post("http://localhost:4000/api/feedback", formData);
+
+      await axios.post("http://127.0.0.1:4000/api/feedback", formData);
+      
       toast.success("Feedback submitted! Our AI is analyzing it now.");
       setFormData({ title: "", description: "", category: "Bug", submitterName: "", submitterEmail: "" });
     } catch (error: any) {
@@ -59,11 +60,10 @@ export default function FeedbackPage() {
                 value={formData.category}
                 onChange={(e) => setFormData({...formData, category: e.target.value})}
               >
-                {/* Requirement 103: Category Enum options */}
-                <option value="Bug" className="bg-white text-slate-900">Bug</option>
-                <option value="Feature Request" className="bg-white text-slate-900">Feature Request</option>
-                <option value="Improvement" className="bg-white text-slate-900">Improvement</option>
-                <option value="Other" className="bg-white text-slate-900">Other</option>
+                <option value="Bug">Bug</option>
+                <option value="Feature Request">Feature Request</option>
+                <option value="Improvement">Improvement</option>
+                <option value="Other">Other</option>
               </select>
             </div>
 
@@ -103,7 +103,6 @@ export default function FeedbackPage() {
               value={formData.description}
               onChange={(e) => setFormData({...formData, description: e.target.value})}
             />
-            {/* Requirement 1.6: Character Counter */}
             <div className={`absolute bottom-3 right-4 text-xs font-bold ${formData.description.length < 20 ? 'text-rose-500' : 'text-emerald-600'}`}>
               {formData.description.length} characters
             </div>
@@ -112,7 +111,7 @@ export default function FeedbackPage() {
           <button 
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-black py-4 rounded-2xl shadow-xl shadow-blue-100 transition-all flex items-center justify-center gap-2 text-lg"
+            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-black py-4 rounded-2xl shadow-xl transition-all flex items-center justify-center gap-2 text-lg"
           >
             {loading ? "Processing..." : <><Send className="w-5 h-5" /> Submit Feedback</>}
           </button>

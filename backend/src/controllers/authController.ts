@@ -5,7 +5,7 @@ export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    // Requirement 3.1: Check against hardcoded credentials in .env
+    // Check against hardcoded credentials in .env
     const isEmailValid = email === process.env.ADMIN_EMAIL;
     const isPasswordValid = password === process.env.ADMIN_PASSWORD;
 
@@ -25,7 +25,7 @@ export const login = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       success: true,
-      token, // This is the "ID Card" the frontend will use
+      token, 
       message: 'Login successful'
     });
 

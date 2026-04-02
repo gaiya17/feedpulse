@@ -32,7 +32,7 @@ export default function AdminLoginPage() {
 
   try {
     const response = await axios.post("http://127.0.0.1:4000/api/auth/login", { 
-      email: email.trim(), // Trim spaces automatically!
+      email: email.trim(), 
       password: password.trim() 
     });
     
@@ -42,7 +42,7 @@ export default function AdminLoginPage() {
       router.push("/dashboard");
     }
   } catch (error: any) {
-    // Senior Tip: Always log the full error during development
+    
     console.error("Login Error Details:", error.response);
     
     const message = error.response?.data?.message || "Server connection failed";

@@ -16,14 +16,12 @@ const Sidebar = () => {
   const pathname = usePathname();
   const router = useRouter();
 
-  const navItems = [
-    { name: "Overview", icon: <LayoutDashboard size={20} />, path: "/dashboard" },
-    { name: "All Feedback", icon: <MessageSquare size={20} />, path: "/dashboard/feedback" },
-    { name: "AI Trends", icon: <Sparkles size={20} />, path: "/dashboard/trends" },
-  ];
+const navItems = [
+  { name: "Overview", icon: <LayoutDashboard size={20} />, path: "/dashboard" },
+];
 
   const handleLogout = () => {
-    localStorage.removeItem("feedpulse_token"); // Requirement 4.3
+    localStorage.removeItem("feedpulse_token"); 
     router.push("/login");
   };
 

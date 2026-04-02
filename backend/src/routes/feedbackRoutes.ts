@@ -1,17 +1,24 @@
 import { Router } from 'express';
-import { createFeedback, deleteFeedback, getAllFeedback, getFeedbackById, updateFeedbackStatus, getAISummary } from '../controllers/feedbackController.js';
-import { protect } from '../middleware/authMiddleware.js'; // Import our new gatekeeper
+import { 
+  createFeedback, 
+  getAllFeedback, 
+  updateFeedbackStatus, 
+  getAISummary, 
+  reanalyzeFeedback
+} from '../controllers/feedbackController.js';
+import { protect } from '../middleware/authMiddleware.js';
+import { feedbackRateLimiter } from '../middleware/rateLimiter.js';
 
 const router = Router();
 
-// PUBLIC: Anyone can submit
-router.post('/', createFeedback);
+// Requirement 1.1: PUBLIC - Anyone can submit
+router.post('/', createFeedback); 
+router.post('/', feedbackRateLimiter, createFeedback);
 
-// PROTECTED: Only the admin with a valid token can see or update
-router.get('/summary', protect, getAISummary);
+// Requirement 4.3: PROTECTED - Only Admin can see/edit
 router.get('/', protect, getAllFeedback);
+router.get('/summary', protect, getAISummary);
 router.patch('/:id', protect, updateFeedbackStatus);
-router.get('/:id', protect, getFeedbackById);
-router.delete('/:id', protect, deleteFeedback);
+router.post('/:id/analyze', protect, reanalyzeFeedback);
 
 export default router;

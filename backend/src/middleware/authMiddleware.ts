@@ -19,8 +19,8 @@ export const protect = (req: Request, res: Response, next: NextFunction) => {
   try {
     // Verify the token using our secret
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-    (req as any).user = decoded; // Attach user info to the request object
-    next(); // Move to the next function (the controller)
+    (req as any).user = decoded; 
+    next(); 
   } catch (error) {
     return res.status(401).json({
       success: false,

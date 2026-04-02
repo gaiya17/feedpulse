@@ -18,12 +18,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        {/* Global Mesh Gradient Background */}
+        {/* Global Mesh Gradient Background - Keeping your theme exactly as is */}
         <div className="fixed inset-0 -z-10 bg-[#F0F9FF]">
           <div className="absolute inset-0 bg-[radial-gradient(at_0%_0%,_hsla(197,100%,96%,1)_0,transparent_50%),radial-gradient(at_50%_0%,_hsla(225,100%,96%,1)_0,transparent_50%),radial-gradient(at_100%_0%,_hsla(170,100%,96%,1)_0,transparent_50%),radial-gradient(at_50%_100%,_hsla(260,100%,98%,1)_0,transparent_50%)]" />
         </div>
         
-        {/* Requirement 1.5: Success and Error notifications */}
+        {/* Success and Error notifications */}
         <Toaster position="top-center" reverseOrder={false} />
         {children}
       </body>
