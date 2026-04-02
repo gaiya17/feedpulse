@@ -1,6 +1,16 @@
+# Dependency folders
 node_modules/
-.env
-.DS_Store
-dist/
-backend/node_modules/
 frontend/node_modules/
+backend/node_modules/
+
+# Environment variables
+.env
+backend/.env
+
+# Build outputs
+.next/
+dist/
+build/
+
+# OS files
+.DS_Store
