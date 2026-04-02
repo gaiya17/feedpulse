@@ -62,17 +62,23 @@ cd feedpulse
 2.Backend Configuration:
 
 Create backend/.env:
+
 Code snippetPORT=4000
+
 MONGO_URI=your_mongodb_uri
+
 GEMINI_API_KEY=your_key_here
+
 JWT_SECRET=your_secret
+
 ADMIN_EMAIL=admin@feedpulse.com
+
 ADMIN_PASSWORD=admin123
 
 3.Install & Run:
 
-Bash# In /backend
+In /backend
 npm install && npm run dev
-# In /frontend
+In /frontend
 npm install && npm run dev
 
