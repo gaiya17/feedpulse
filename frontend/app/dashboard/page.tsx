@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { 
@@ -39,15 +40,32 @@ export default function DashboardPage() {
   const [showSummary, setShowSummary] = useState(false);
   const [summarizing, setSummarizing] = useState(false);
 
+  const router = useRouter();
+
+  const getApiUrl = () => {
+    const rawApiUrl = process.env.NEXT_PUBLIC_API_URL;
+    return rawApiUrl && rawApiUrl !== "undefined" ? rawApiUrl : "http://localhost:4000/api";
+  };
+
   const fetchFeedback = async () => {
     try {
       const token = localStorage.getItem("feedpulse_token");
-      const response = await axios.get("http://127.0.0.1:4000/api/feedback", {
+      const rawApiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const API_URL = rawApiUrl && rawApiUrl !== "undefined" ? rawApiUrl : "http://localhost:4000/api";
+      const response = await axios.get(`${API_URL}/feedback`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setFeedbacks(response.data.data);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to fetch feedback", error);
+      const status = error.response?.status;
+      if (status === 401) {
+        toast.error("Session expired or not authorized. Please login.");
+        localStorage.removeItem("feedpulse_token");
+        router.push("/login");
+        return;
+      }
+      toast.error("Failed to fetch feedback from the server.");
     } finally {
       setLoading(false);
     }
@@ -62,7 +80,7 @@ export default function DashboardPage() {
     e.stopPropagation();
     try {
       const token = localStorage.getItem("feedpulse_token");
-      await axios.patch(`http://127.0.0.1:4000/api/feedback/${id}`, 
+      await axios.patch(`${getApiUrl()}/feedback/${id}`, 
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -78,7 +96,7 @@ export default function DashboardPage() {
     setSummarizing(true);
     try {
       const token = localStorage.getItem("feedpulse_token");
-      const response = await axios.get("http://127.0.0.1:4000/api/feedback/summary", {
+      const response = await axios.get(`${getApiUrl()}/feedback/summary`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setSummary(response.data.data.summary);
@@ -146,7 +164,7 @@ export default function DashboardPage() {
   const toastId = toast.loading("Gemini is re-thinking...");
   try {
     const token = localStorage.getItem("feedpulse_token");
-    await axios.post(`http://127.0.0.1:4000/api/feedback/${id}/analyze`, {}, {
+    await axios.post(`${getApiUrl()}/feedback/${id}/analyze`, {}, {
       headers: { Authorization: `Bearer ${token}` }
     });
     toast.success("AI analysis updated!", { id: toastId });

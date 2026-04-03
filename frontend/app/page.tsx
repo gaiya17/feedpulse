@@ -25,8 +25,10 @@ export default function FeedbackPage() {
 
     setLoading(true);
     try {
+      const rawApiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const API_URL = rawApiUrl && rawApiUrl !== "undefined" ? rawApiUrl : "http://localhost:4000/api";
 
-      await axios.post("http://127.0.0.1:4000/api/feedback", formData);
+      await axios.post(`${API_URL}/feedback`, formData);
       
       toast.success("Feedback submitted! Our AI is analyzing it now.");
       setFormData({ title: "", description: "", category: "Bug", submitterName: "", submitterEmail: "" });

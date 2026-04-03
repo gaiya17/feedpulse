@@ -31,7 +31,9 @@ export default function AdminLoginPage() {
   setLoading(true);
 
   try {
-    const response = await axios.post("http://127.0.0.1:4000/api/auth/login", { 
+    const rawApiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const API_URL = rawApiUrl && rawApiUrl !== "undefined" ? rawApiUrl : "http://localhost:4000/api";
+    const response = await axios.post(`${API_URL}/auth/login`, { 
       email: email.trim(), 
       password: password.trim() 
     });

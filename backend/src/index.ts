@@ -13,6 +13,10 @@ dotenv.config();
 const app: Application = express();
 const PORT = process.env.PORT || 4000;
 
+// Parse incoming JSON and URL-encoded payloads
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 //  Global Middleware
 app.use(cors({
   origin: "http://localhost:3000",
@@ -21,8 +25,25 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-app.use(express.json()); 
-app.use(mongoSanitize());
+app.use((req, res, next) => {
+  const sanitize = (obj: any) => {
+    if (obj instanceof Object) {
+      for (const key in obj) {
+        if (key.startsWith('$') || key.includes('.')) {
+          delete obj[key];
+        } else {
+          sanitize(obj[key]);
+        }
+      }
+    }
+    return obj;
+  };
+
+  req.body = sanitize(req.body);
+  req.params = sanitize(req.params);
+  // We avoid touching req.query directly to prevent the "Getter only" crash
+  next();
+});
 
 const submissionLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour window
@@ -54,6 +75,14 @@ app.get('/', (req: Request, res: Response) => {
   res.status(200).json({ 
     success: true, 
     message: "FeedPulse API is alive and kicking!" 
+  });
+});
+
+// Fallback 404 handler
+app.use((req: Request, res: Response) => {
+  res.status(404).json({
+    success: false,
+    message: `Route Not Found: ${req.method} ${req.url}`
   });
 });
 
